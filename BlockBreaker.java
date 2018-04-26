@@ -29,11 +29,13 @@ public class BlockBreaker extends Application
 		Pane gamePane = new Pane();
 		Pane rightPane = new Pane();
 		
-		Rectangle scoreRect = new Rectangle(112,63,Paint.valueOf("0000FF"));
-		scoreRect.relocate(392,0);
+		Rectangle scoreRect = new Rectangle(100,63,Paint.valueOf("0000FF"));
+		scoreRect.relocate(404,0);
 		
-		StackPane stackFire = new StackPane();
-		Rectangle fireRect = new Rectangle(112,190,Paint.valueOf("FF0000"));
+		Rectangle testRect = new Rectangle(49,49,Paint.valueOf("00FF00"));
+		testRect.relocate(150,150);
+		
+		Rectangle fireRect = new Rectangle(100,190,Paint.valueOf("FF0000"));
 		fireRect.setOnMousePressed(new EventHandler<MouseEvent>(){
 			public void handle(MouseEvent event)
 			{
@@ -41,7 +43,7 @@ public class BlockBreaker extends Application
 				//fire
 			}
 		});
-		//fireRect.relocate(392,706);
+		
 		Text fireText = new Text("FIRE");
 		fireText.setOnMousePressed(new EventHandler<MouseEvent>(){
 			public void handle(MouseEvent event)
@@ -50,13 +52,15 @@ public class BlockBreaker extends Application
 				//fire
 			}
 		});
+		
+		StackPane stackFire = new StackPane();
 		stackFire.getChildren().addAll(fireRect,fireText);
-		stackFire.setLayoutX(392);
+		stackFire.setLayoutX(404);
 		stackFire.setLayoutY(706);
 		
 		rightPane.getChildren().addAll(scoreRect,stackFire);
 		
-		root.getChildren().addAll(gamePane,rightPane);
+		root.getChildren().addAll(gamePane,rightPane,testRect);
 		scene.getStylesheets().add(BlockBreaker.class.getResource("gameStyle.css").toExternalForm());
 		mainStage.setScene(scene); 
 		mainStage.show();
