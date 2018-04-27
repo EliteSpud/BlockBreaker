@@ -30,21 +30,21 @@ public class Main extends Application
 		Pane gamePane = new Pane();
 		Pane rightPane = new Pane();
 		
-		Rectangle menuRect = new Rectangle(100,63,Paint.valueOf("0000FF"));
+		Rectangle menuRect = new Rectangle(112,63,Paint.valueOf("0000FF"));
 		menuRect.setStrokeType(StrokeType.INSIDE);
 		menuRect.setStroke(Paint.valueOf("000000"));
 		Text menuText = new Text("Menu");
 		
-		Rectangle scoreRect = new Rectangle(100,63,Paint.valueOf("0000FF"));
+		Rectangle scoreRect = new Rectangle(112,63,Paint.valueOf("0000FF"));
 		scoreRect.setStrokeType(StrokeType.INSIDE);
 		scoreRect.setStroke(Paint.valueOf("000000"));
 		Text scoreText = new Text("scoretest");
 		
-		Rectangle scoreMeterRect = new Rectangle(100,560,Paint.valueOf("9BA288"));
+		Rectangle scoreMeterRect = new Rectangle(112,560,Paint.valueOf("9BA288"));
 		scoreMeterRect.setStrokeType(StrokeType.INSIDE);
 		scoreMeterRect.setStroke(Paint.valueOf("000000"));
 		
-		Rectangle fireRect = new Rectangle(100,210,Paint.valueOf("FF0000"));
+		Rectangle fireRect = new Rectangle(112,210,Paint.valueOf("FF0000"));
 		fireRect.setStrokeType(StrokeType.INSIDE);
 		fireRect.setStroke(Paint.valueOf("000000"));
 		fireRect.setOnMousePressed(new EventHandler<MouseEvent>(){
@@ -65,22 +65,22 @@ public class Main extends Application
 		
 		StackPane stackMenu = new StackPane();
 		stackMenu.getChildren().addAll(menuRect,menuText);
-		stackMenu.setLayoutX(404);
+		stackMenu.setLayoutX(392);
 		stackMenu.setLayoutY(0);
 		
 		StackPane stackScore = new StackPane();
 		stackScore.getChildren().addAll(scoreRect,scoreText);
-		stackScore.setLayoutX(404);
+		stackScore.setLayoutX(392);
 		stackScore.setLayoutY(63);
 		
 		StackPane stackStars = new StackPane();
 		stackStars.getChildren().addAll(scoreMeterRect);
-		stackStars.setLayoutX(404);
+		stackStars.setLayoutX(392);
 		stackStars.setLayoutY(126);
 		
 		StackPane stackFire = new StackPane();
 		stackFire.getChildren().addAll(fireRect,fireText);
-		stackFire.setLayoutX(404);
+		stackFire.setLayoutX(392);
 		stackFire.setLayoutY(686);
 		
 		rightPane.getChildren().addAll(stackMenu,stackScore,stackStars,stackFire);
