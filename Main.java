@@ -13,7 +13,7 @@ import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 
 
-public class BlockBreaker extends Application
+public class Main extends Application
 {
 	public static void main(String[] args)
 	{
