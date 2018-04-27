@@ -2,8 +2,10 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeType;
 import javafx.scene.paint.Paint;
 import java.awt.Color;
 import javafx.scene.text.*;
@@ -29,13 +31,23 @@ public class BlockBreaker extends Application
 		Pane gamePane = new Pane();
 		Pane rightPane = new Pane();
 		
-		Rectangle scoreRect = new Rectangle(100,63,Paint.valueOf("0000FF"));
-		scoreRect.relocate(404,0);
+		Rectangle menuRect = new Rectangle(100,63,Paint.valueOf("0000FF"));
+		menuRect.setStrokeType(StrokeType.INSIDE);
+		menuRect.setStroke(Paint.valueOf("000000"));
+		Text menuText = new Text("Menu");
 		
-		Rectangle testRect = new Rectangle(49,49,Paint.valueOf("00FF00"));
-		testRect.relocate(150,150);
+		Rectangle scoreRect = new Rectangle(100,63,Paint.valueOf("0000FF"));
+		scoreRect.setStrokeType(StrokeType.INSIDE);
+		scoreRect.setStroke(Paint.valueOf("000000"));
+		Text scoreText = new Text("scoretest");
+		
+		Rectangle scoreMeterRect = new Rectangle(100,580,Paint.valueOf("9BA288"));
+		scoreMeterRect.setStrokeType(StrokeType.INSIDE);
+		scoreMeterRect.setStroke(Paint.valueOf("000000"));
 		
 		Rectangle fireRect = new Rectangle(100,190,Paint.valueOf("FF0000"));
+		fireRect.setStrokeType(StrokeType.INSIDE);
+		fireRect.setStroke(Paint.valueOf("000000"));
 		fireRect.setOnMousePressed(new EventHandler<MouseEvent>(){
 			public void handle(MouseEvent event)
 			{
@@ -43,7 +55,6 @@ public class BlockBreaker extends Application
 				//fire
 			}
 		});
-		
 		Text fireText = new Text("FIRE");
 		fireText.setOnMousePressed(new EventHandler<MouseEvent>(){
 			public void handle(MouseEvent event)
@@ -53,14 +64,29 @@ public class BlockBreaker extends Application
 			}
 		});
 		
+		StackPane stackMenu = new StackPane();
+		stackMenu.getChildren().addAll(menuRect,menuText);
+		stackMenu.setLayoutX(404);
+		stackMenu.setLayoutY(0);
+		
+		StackPane stackScore = new StackPane();
+		stackScore.getChildren().addAll(scoreRect,scoreText);
+		stackScore.setLayoutX(404);
+		stackScore.setLayoutY(63);
+		
+		StackPane stackStars = new StackPane();
+		stackStars.getChildren().addAll(scoreMeterRect);
+		stackStars.setLayoutX(404);
+		stackStars.setLayoutY(126);
+		
 		StackPane stackFire = new StackPane();
 		stackFire.getChildren().addAll(fireRect,fireText);
 		stackFire.setLayoutX(404);
 		stackFire.setLayoutY(706);
 		
-		rightPane.getChildren().addAll(scoreRect,stackFire);
+		rightPane.getChildren().addAll(stackMenu,stackScore,stackStars,stackFire);
 		
-		root.getChildren().addAll(gamePane,rightPane,testRect);
+		root.getChildren().addAll(gamePane,rightPane);
 		scene.getStylesheets().add(BlockBreaker.class.getResource("gameStyle.css").toExternalForm());
 		mainStage.setScene(scene); 
 		mainStage.show();
