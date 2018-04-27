@@ -87,7 +87,7 @@ public class Main extends Application
 		rightPane.getChildren().addAll(stackMenu,stackScore,stackStars,stackFire);
 		
 		root.getChildren().addAll(gamePane,rightPane);
-		scene.getStylesheets().add(BlockBreaker.class.getResource("gameStyle.css").toExternalForm());
+		scene.getStylesheets().add(Main.class.getResource("gameStyle.css").toExternalForm());
 		mainStage.setScene(scene); 
 		mainStage.show();
 	}
