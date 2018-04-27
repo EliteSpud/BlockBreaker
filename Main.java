@@ -3,6 +3,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
@@ -24,8 +25,6 @@ public class Main extends Application
 	{
 		mainStage.setTitle("Block Breaker");
 		
-		
-		
 		Pane root = new Pane(); //root of the scene
 		Scene scene = new Scene(root,504,896); //9:16 aspect ratio, divisible by 8
 		Pane gamePane = new Pane();
@@ -41,11 +40,11 @@ public class Main extends Application
 		scoreRect.setStroke(Paint.valueOf("000000"));
 		Text scoreText = new Text("scoretest");
 		
-		Rectangle scoreMeterRect = new Rectangle(100,580,Paint.valueOf("9BA288"));
+		Rectangle scoreMeterRect = new Rectangle(100,560,Paint.valueOf("9BA288"));
 		scoreMeterRect.setStrokeType(StrokeType.INSIDE);
 		scoreMeterRect.setStroke(Paint.valueOf("000000"));
 		
-		Rectangle fireRect = new Rectangle(100,190,Paint.valueOf("FF0000"));
+		Rectangle fireRect = new Rectangle(100,210,Paint.valueOf("FF0000"));
 		fireRect.setStrokeType(StrokeType.INSIDE);
 		fireRect.setStroke(Paint.valueOf("000000"));
 		fireRect.setOnMousePressed(new EventHandler<MouseEvent>(){
@@ -82,11 +81,28 @@ public class Main extends Application
 		StackPane stackFire = new StackPane();
 		stackFire.getChildren().addAll(fireRect,fireText);
 		stackFire.setLayoutX(404);
-		stackFire.setLayoutY(706);
+		stackFire.setLayoutY(686);
 		
 		rightPane.getChildren().addAll(stackMenu,stackScore,stackStars,stackFire);
 		
-		root.getChildren().addAll(gamePane,rightPane);
+		FlowPane flowGame = new FlowPane();
+		StackPane stackGrid[] = new StackPane[112]; 
+		Rectangle rectGame[] = new Rectangle[112];
+		Text textGame[] = new Text[112];
+		for(int i = 0; i < stackGrid.length; i++)
+		{
+			stackGrid[i] = new StackPane();
+			rectGame[i] = new Rectangle(49,49,Paint.valueOf("FFFFFF"));
+			rectGame[i].setStrokeType(StrokeType.INSIDE);
+			rectGame[i].setStroke(Paint.valueOf("000000"));
+			textGame[i] = new Text("0");
+			stackGrid[i].getChildren().addAll(rectGame[i],textGame[i]);
+			flowGame.getChildren().add(stackGrid[i]);
+		}
+		flowGame.setLayoutX(0);
+		flowGame.setLayoutY(0);
+		
+		root.getChildren().addAll(gamePane,rightPane,flowGame);
 		scene.getStylesheets().add(Main.class.getResource("gameStyle.css").toExternalForm());
 		mainStage.setScene(scene); 
 		mainStage.show();
