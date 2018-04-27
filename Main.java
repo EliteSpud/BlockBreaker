@@ -13,38 +13,57 @@ import javafx.scene.text.*;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 
-
 public class Main extends Application
 {
+	Pane root;
+	Scene scene;
+	Pane gamePane;
+	Pane rightPane;
+	Rectangle menuRect;
+	Text menuText;
+	Rectangle scoreRect;
+	Text scoreText;
+	Rectangle scoreMeterRect;
+	Rectangle fireRect;
+	Text fireText;
+	StackPane stackMenu;
+	StackPane stackScore;
+	StackPane stackStars;
+	StackPane stackFire;
+	FlowPane flowGame;
+	StackPane stackGrid[];
+	Rectangle gameRect[];
+	Text gameText[];
 	public static void main(String[] args)
 	{
 		launch(args);
+		//Main m = new Main();
+		//m.run();
 	}
-	
 	public void start(Stage mainStage)
 	{
 		mainStage.setTitle("Block Breaker");
 		
-		Pane root = new Pane(); //root of the scene
-		Scene scene = new Scene(root,504,896); //9:16 aspect ratio, divisible by 8
-		Pane gamePane = new Pane();
-		Pane rightPane = new Pane();
+		root = new Pane(); //root of the scene
+		scene = new Scene(root,504,896); //9:16 aspect ratio, divisible by 8
+		gamePane = new Pane();
+		rightPane = new Pane();
 		
-		Rectangle menuRect = new Rectangle(112,63,Paint.valueOf("0000FF"));
+		menuRect = new Rectangle(112,63/*,Paint.valueOf("0000FF")*/);
 		menuRect.setStrokeType(StrokeType.INSIDE);
 		menuRect.setStroke(Paint.valueOf("000000"));
-		Text menuText = new Text("Menu");
+		menuText = new Text("Menu");
 		
-		Rectangle scoreRect = new Rectangle(112,63,Paint.valueOf("0000FF"));
+		scoreRect = new Rectangle(112,63,Paint.valueOf("0000FF"));
 		scoreRect.setStrokeType(StrokeType.INSIDE);
 		scoreRect.setStroke(Paint.valueOf("000000"));
-		Text scoreText = new Text("scoretest");
+		scoreText = new Text("scoretest");
 		
-		Rectangle scoreMeterRect = new Rectangle(112,560,Paint.valueOf("9BA288"));
+		scoreMeterRect = new Rectangle(112,560,Paint.valueOf("9BA288"));
 		scoreMeterRect.setStrokeType(StrokeType.INSIDE);
 		scoreMeterRect.setStroke(Paint.valueOf("000000"));
 		
-		Rectangle fireRect = new Rectangle(112,210,Paint.valueOf("FF0000"));
+		fireRect = new Rectangle(112,210,Paint.valueOf("FF0000"));
 		fireRect.setStrokeType(StrokeType.INSIDE);
 		fireRect.setStroke(Paint.valueOf("000000"));
 		fireRect.setOnMousePressed(new EventHandler<MouseEvent>(){
@@ -54,7 +73,7 @@ public class Main extends Application
 				//fire
 			}
 		});
-		Text fireText = new Text("FIRE");
+		fireText = new Text("FIRE");
 		fireText.setOnMousePressed(new EventHandler<MouseEvent>(){
 			public void handle(MouseEvent event)
 			{
@@ -63,40 +82,40 @@ public class Main extends Application
 			}
 		});
 		
-		StackPane stackMenu = new StackPane();
+		stackMenu = new StackPane();
 		stackMenu.getChildren().addAll(menuRect,menuText);
 		stackMenu.setLayoutX(392);
 		stackMenu.setLayoutY(0);
 		
-		StackPane stackScore = new StackPane();
+		stackScore = new StackPane();
 		stackScore.getChildren().addAll(scoreRect,scoreText);
 		stackScore.setLayoutX(392);
 		stackScore.setLayoutY(63);
 		
-		StackPane stackStars = new StackPane();
+		stackStars = new StackPane();
 		stackStars.getChildren().addAll(scoreMeterRect);
 		stackStars.setLayoutX(392);
 		stackStars.setLayoutY(126);
 		
-		StackPane stackFire = new StackPane();
+		stackFire = new StackPane();
 		stackFire.getChildren().addAll(fireRect,fireText);
 		stackFire.setLayoutX(392);
 		stackFire.setLayoutY(686);
 		
 		rightPane.getChildren().addAll(stackMenu,stackScore,stackStars,stackFire);
 		
-		FlowPane flowGame = new FlowPane();
-		StackPane stackGrid[] = new StackPane[112]; 
-		Rectangle rectGame[] = new Rectangle[112];
-		Text textGame[] = new Text[112];
+		flowGame = new FlowPane();
+		stackGrid = new StackPane[112]; 
+		gameRect = new Rectangle[112];
+		gameText = new Text[112];
 		for(int i = 0; i < stackGrid.length; i++)
 		{
 			stackGrid[i] = new StackPane();
-			rectGame[i] = new Rectangle(49,49,Paint.valueOf("FFFFFF"));
-			rectGame[i].setStrokeType(StrokeType.INSIDE);
-			rectGame[i].setStroke(Paint.valueOf("000000"));
-			textGame[i] = new Text("0");
-			stackGrid[i].getChildren().addAll(rectGame[i],textGame[i]);
+			gameRect[i] = new Rectangle(49,49,Paint.valueOf("FFFFFF"));
+			gameRect[i].setStrokeType(StrokeType.INSIDE);
+			gameRect[i].setStroke(Paint.valueOf("000000"));
+			gameText[i] = new Text("0");
+			stackGrid[i].getChildren().addAll(gameRect[i],gameText[i]);
 			flowGame.getChildren().add(stackGrid[i]);
 		}
 		flowGame.setLayoutX(0);
@@ -104,28 +123,30 @@ public class Main extends Application
 		
 		root.getChildren().addAll(gamePane,rightPane,flowGame);
 		scene.getStylesheets().add(Main.class.getResource("gameStyle.css").toExternalForm());
+		
 		mainStage.setScene(scene); 
 		mainStage.show();
+		test();
+		System.out.println("1");
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	public void run()
+	{
+		BuildGUI bg = new BuildGUI();
+		//bg.get(menuRect).setFill(Paint.valueOf("FF00FF"));
+		bg.test();
+		System.out.println("test done");
+	}
+	public void test()
+	{
+		System.out.println("2");
+		menuRect.setFill(Paint.valueOf("FFFFFF"));
+	}
+	public Rectangle get(Rectangle r)
+	{
+		return r;
+	}
+	public Text get(Text t)
+	{
+		return t;
+	}
 }
