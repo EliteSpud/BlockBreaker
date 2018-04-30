@@ -12,141 +12,74 @@ import java.awt.Color;
 import javafx.scene.text.*;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
+import java.util.ArrayList;
 
 public class Main extends Application
 {
-	Pane root;
-	Scene scene;
-	Pane gamePane;
-	Pane rightPane;
-	Rectangle menuRect;
-	Text menuText;
-	Rectangle scoreRect;
-	Text scoreText;
-	Rectangle scoreMeterRect;
-	Rectangle fireRect;
-	Text fireText;
-	StackPane stackMenu;
-	StackPane stackScore;
-	StackPane stackStars;
-	StackPane stackFire;
-	FlowPane flowGame;
-	StackPane stackGrid[];
-	Rectangle gameRect[];
-	Text gameText[];
+	int currentRound = 0;
 	public static void main(String[] args)
 	{
 		launch(args);
-		//Main m = new Main();
-		//m.run();
 	}
 	public void start(Stage mainStage)
 	{
-		mainStage.setTitle("Block Breaker");
-		
-		root = new Pane(); //root of the scene
-		scene = new Scene(root,504,896); //9:16 aspect ratio, divisible by 8
-		gamePane = new Pane();
-		rightPane = new Pane();
-		
-		menuRect = new Rectangle(112,63/*,Paint.valueOf("0000FF")*/);
-		menuRect.setStrokeType(StrokeType.INSIDE);
-		menuRect.setStroke(Paint.valueOf("000000"));
-		menuText = new Text("Menu");
-		
-		scoreRect = new Rectangle(112,63,Paint.valueOf("0000FF"));
-		scoreRect.setStrokeType(StrokeType.INSIDE);
-		scoreRect.setStroke(Paint.valueOf("000000"));
-		scoreText = new Text("scoretest");
-		
-		scoreMeterRect = new Rectangle(112,560,Paint.valueOf("9BA288"));
-		scoreMeterRect.setStrokeType(StrokeType.INSIDE);
-		scoreMeterRect.setStroke(Paint.valueOf("000000"));
-		
-		fireRect = new Rectangle(112,210,Paint.valueOf("FF0000"));
-		fireRect.setStrokeType(StrokeType.INSIDE);
-		fireRect.setStroke(Paint.valueOf("000000"));
-		fireRect.setOnMousePressed(new EventHandler<MouseEvent>(){
-			public void handle(MouseEvent event)
-			{
-				System.out.println("FIRE CLICKED");
-				//fire
-			}
-		});
-		fireText = new Text("FIRE");
-		fireText.setOnMousePressed(new EventHandler<MouseEvent>(){
-			public void handle(MouseEvent event)
-			{
-				System.out.println("FIRE CLICKED");
-				//fire
-			}
-		});
-		
-		stackMenu = new StackPane();
-		stackMenu.getChildren().addAll(menuRect,menuText);
-		stackMenu.setLayoutX(392);
-		stackMenu.setLayoutY(0);
-		
-		stackScore = new StackPane();
-		stackScore.getChildren().addAll(scoreRect,scoreText);
-		stackScore.setLayoutX(392);
-		stackScore.setLayoutY(63);
-		
-		stackStars = new StackPane();
-		stackStars.getChildren().addAll(scoreMeterRect);
-		stackStars.setLayoutX(392);
-		stackStars.setLayoutY(126);
-		
-		stackFire = new StackPane();
-		stackFire.getChildren().addAll(fireRect,fireText);
-		stackFire.setLayoutX(392);
-		stackFire.setLayoutY(686);
-		
-		rightPane.getChildren().addAll(stackMenu,stackScore,stackStars,stackFire);
-		
-		flowGame = new FlowPane();
-		stackGrid = new StackPane[112]; 
-		gameRect = new Rectangle[112];
-		gameText = new Text[112];
-		for(int i = 0; i < stackGrid.length; i++)
-		{
-			stackGrid[i] = new StackPane();
-			gameRect[i] = new Rectangle(49,49,Paint.valueOf("FFFFFF"));
-			gameRect[i].setStrokeType(StrokeType.INSIDE);
-			gameRect[i].setStroke(Paint.valueOf("000000"));
-			gameText[i] = new Text("0");
-			stackGrid[i].getChildren().addAll(gameRect[i],gameText[i]);
-			flowGame.getChildren().add(stackGrid[i]);
-		}
-		flowGame.setLayoutX(0);
-		flowGame.setLayoutY(0);
-		
-		root.getChildren().addAll(gamePane,rightPane,flowGame);
-		scene.getStylesheets().add(Main.class.getResource("gameStyle.css").toExternalForm());
-		
-		mainStage.setScene(scene); 
-		mainStage.show();
-		test();
-		System.out.println("1");
-	}
-	public void run()
-	{
 		BuildGUI bg = new BuildGUI();
-		//bg.get(menuRect).setFill(Paint.valueOf("FF00FF"));
-		bg.test();
-		System.out.println("test done");
+		GenerateNumbers gn = new GenerateNumbers();
+		ArrayList<Integer> blockValues = new ArrayList<Integer>(gn.generate(1,51,20));
+		//blockValues = gn.generate(1,51,20); //params : level, high, low
+		bg.build(mainStage,gn,bg,blockValues);
+		
+		buildGame(bg,gn,blockValues);
+		//generate colours based on numbers
+		//spaces in-between blocks
+		//make them move down each round (have a button to test it)
+		//make balls + counter
+		//add direction choice
+		//bouncing
+		//decrement block value
+		//win/lose function
+		//lasers
+		//score counter
+		//score meter
 	}
-	public void test()
+	public void buildGame(BuildGUI bg,GenerateNumbers gn,ArrayList blockValues)
 	{
-		System.out.println("2");
-		menuRect.setFill(Paint.valueOf("FFFFFF"));
+		
+		Text gameText[] = bg.getGameText();
+		int startPos = blockValues.size()-1;
+		
+		SetValues sv = new SetValues();
+		sv.set(blockValues,gameText,gn,bg);
+		int currentRows = gn.getCurrentRows();
+		for(int i = (currentRows*8)-1; i > -1; i--)
+		{
+			FlowPane flowGame = bg.getFlowGame();
+			StackPane stackGrid[] = bg.getStackGrid();
+			//flowGame.getChildren().add(stackGrid[i]);
+		}
+		
+		/*for(int i = 0; i < blockValues.size(); i++)
+		{
+			gameText[startPos-i].setText(String.valueOf(blockValues.get(i)));
+			Rectangle gameRect[] = bg.getGameRect();
+			if(gameText[startPos-i].getText() != "")
+			{
+				if(Integer.parseInt(gameText[startPos-i].getText()) >= 30)
+				{
+					gameRect[startPos-i].setFill(Paint.valueOf("FFFF00"));
+				}
+			}
+			FlowPane flowGame = bg.getFlowGame();
+			StackPane stackGrid[] = bg.getStackGrid();
+			flowGame.getChildren().add(stackGrid[i]);
+		}*/
 	}
-	public Rectangle get(Rectangle r)
+	public int getCurrentRound()
 	{
-		return r;
+		return currentRound;
 	}
-	public Text get(Text t)
+	public void setCurrentRound(int round)
 	{
-		return t;
+		currentRound = round;
 	}
 }
