@@ -12,6 +12,7 @@ import java.awt.Color;
 import javafx.scene.text.*;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.control.Button;
 
 public class Main extends Application
 {
@@ -34,11 +35,11 @@ public class Main extends Application
 	StackPane stackGrid[];
 	Rectangle gameRect[];
 	Text gameText[];
+	Button btnNextRound;
+	
 	public static void main(String[] args)
 	{
 		launch(args);
-		//Main m = new Main();
-		//m.run();
 	}
 	public void start(Stage mainStage)
 	{
@@ -104,6 +105,8 @@ public class Main extends Application
 		
 		rightPane.getChildren().addAll(stackMenu,stackScore,stackStars,stackFire);
 		
+		btnNextRound
+		
 		flowGame = new FlowPane();
 		stackGrid = new StackPane[112]; 
 		gameRect = new Rectangle[112];
@@ -126,27 +129,22 @@ public class Main extends Application
 		
 		mainStage.setScene(scene); 
 		mainStage.show();
-		test();
-		System.out.println("1");
 	}
 	public void run()
 	{
 		BuildGUI bg = new BuildGUI();
-		//bg.get(menuRect).setFill(Paint.valueOf("FF00FF"));
-		bg.test();
 		System.out.println("test done");
 	}
-	public void test()
+	public Rectangle getGameRect()
 	{
-		System.out.println("2");
-		menuRect.setFill(Paint.valueOf("FFFFFF"));
+		return gameRect;
 	}
-	public Rectangle get(Rectangle r)
+	public Text getGameText()
 	{
-		return r;
+		return gameText;
 	}
-	public Text get(Text t)
+	public StackPane getStackGrid()
 	{
-		return t;
+		return stackGrid;
 	}
 }
