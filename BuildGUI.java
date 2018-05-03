@@ -33,12 +33,15 @@ public class BuildGUI
 	StackPane stackStars;
 	StackPane stackFire;
 	//main game area elements
-	FlowPane flowGame;
+	GridPane gridGame;
 	StackPane stackGrid[];
 	Rectangle gameRect[];
 	Text gameText[];
 	//testing elements
 	Button btnNextRound;
+	
+	int maxBlocks = 112; //maximum number of blocks on screen
+	
 	public void build(Stage s, GenerateNumbers gn,BuildGUI bg,ArrayList blockValues)
 	{
 		s.setTitle("Block Breaker");
@@ -102,17 +105,17 @@ public class BuildGUI
 		
 		rightPane.getChildren().addAll(stackMenu,stackScore,stackStars,stackFire);
 		
-		//game area starts here//
+		//////////game area starts here//////////
 		
-		flowGame = new FlowPane();
-		stackGrid = new StackPane[112]; //112 is max number of blocks on screen
-		gameRect = new Rectangle[112];
-		gameText = new Text[112];
+		gridGame = new GridPane();
+		stackGrid = new StackPane[maxBlocks];
+		gameRect = new Rectangle[maxBlocks];
+		gameText = new Text[maxBlocks];
 		
 		placeBlocks(gn,bg,blockValues);
 		
-		flowGame.setLayoutX(0);
-		flowGame.setLayoutY(0);
+		gridGame.setLayoutX(0);
+		gridGame.setLayoutY(0);
 		
 		//game area ends here//
 		
@@ -134,7 +137,7 @@ public class BuildGUI
 		});
 		
 		
-		root.getChildren().addAll(rightPane,flowGame,btnNextRound);
+		root.getChildren().addAll(rightPane,gridGame,btnNextRound);
 		scene.getStylesheets().add(Main.class.getResource("gameStyle.css").toExternalForm());
 		
 		s.setScene(scene); 
@@ -146,7 +149,7 @@ public class BuildGUI
 		for(int i = 0; i < currentRows*8; i++)
 		{
 			stackGrid[i].getChildren().clear();
-			flowGame.getChildren().remove(stackGrid[i]);
+			gridGame.getChildren().remove(stackGrid[i]);
 		}
 	}
 	public void placeBlocks(GenerateNumbers gn,BuildGUI bg,ArrayList blockValues)
@@ -166,9 +169,28 @@ public class BuildGUI
 			}
 		}
 		sv.set(blockValues,gameText,gn,bg);
-		for(int i = 0; i < currentRows*8; i++)
+		
+		BlockGaps gap = new BlockGaps();
+		gap.gaps(currentRows*8); //generates boolean array of true/false to determine if there is a gap (true) or not (false).
+		ArrayList<Boolean> gaps = gap.getBlockGaps();
+		
+		Rectangle blankRects[] = new Rectangle[currentRows*8];
+		
+		for(int i = (currentRows*8)-1; i > -1; i--)
 		{
-			flowGame.getChildren().add(stackGrid[i]);
+			blankRects[i] = new Rectangle();
+			blankRects[i].setLayoutX(49);
+			if(gaps.get(i) == false)
+			{
+				gridGame.getChildren().add(stackGrid[i]);
+			}
+			else if(gaps.get(i) == true)
+			{
+				
+				//add a blank StackPane, Rectangle, or leave a gap in some other way
+				//give it the booleans so you can go backwards through that array to preserve the gaps
+				//this array can also be used to determine which blocks have been destroyed, by setting the corresponding value to true.
+			}
 		}
 	}
 	public void shiftBlocks(GenerateNumbers gn,int initialRows,int roundNum,BuildGUI bg, ArrayList blockValues)
@@ -191,8 +213,8 @@ public class BuildGUI
 	{
 		return stackGrid;
 	}
-	public FlowPane getFlowGame()
+	public GridPane getgridGame()
 	{
-		return flowGame;
+		return gridGame;
 	}
 }
