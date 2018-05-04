@@ -112,7 +112,10 @@ public class BuildGUI
 		gameRect = new Rectangle[maxBlocks];
 		gameText = new Text[maxBlocks];
 		
-		placeBlocks(gn,bg,blockValues);
+		BlockGaps gap = new BlockGaps();
+		int totalRows = gn.getTotalRows();
+		gap.gaps(totalRows*8); //generates boolean array of true/false to determine if there is a gap (true) or not (false).
+		placeBlocks(gn,bg,gap,blockValues);
 		
 		gridGame.setLayoutX(0);
 		gridGame.setLayoutY(0);
@@ -132,7 +135,7 @@ public class BuildGUI
 				int roundNum = round.next();
 				System.out.println("Round : "+roundNum);
 				removeBlocks(gn);
-				shiftBlocks(gn,initialRows,roundNum,bg,blockValues);
+				shiftBlocks(gn,initialRows,roundNum,bg,gap,blockValues);
 			}
 		});
 		
@@ -152,7 +155,7 @@ public class BuildGUI
 			gridGame.getChildren().remove(stackGrid[i]);
 		}
 	}
-	public void placeBlocks(GenerateNumbers gn,BuildGUI bg,ArrayList blockValues)
+	public void placeBlocks(GenerateNumbers gn,BuildGUI bg,BlockGaps gap,ArrayList blockValues)
 	{
 		SetValues sv = new SetValues();
 		int currentRows = gn.getCurrentRows();
@@ -170,36 +173,28 @@ public class BuildGUI
 		}
 		sv.set(blockValues,gameText,gn,bg);
 		
-		BlockGaps gap = new BlockGaps();
-		gap.gaps(currentRows*8); //generates boolean array of true/false to determine if there is a gap (true) or not (false).
 		ArrayList<Boolean> gaps = gap.getBlockGaps();
 		
-		Rectangle blankRects[] = new Rectangle[currentRows*8];
-		
-		for(int i = (currentRows*8)-1; i > -1; i--)
+		int count = (currentRows*8)-1;
+		for(int col = 0; col < currentRows; col++)
 		{
-			blankRects[i] = new Rectangle();
-			blankRects[i].setLayoutX(49);
-			if(gaps.get(i) == false)
+			for(int row = 0; row < 8; row++)
 			{
-				gridGame.getChildren().add(stackGrid[i]);
-			}
-			else if(gaps.get(i) == true)
-			{
-				
-				//add a blank StackPane, Rectangle, or leave a gap in some other way
-				//give it the booleans so you can go backwards through that array to preserve the gaps
-				//this array can also be used to determine which blocks have been destroyed, by setting the corresponding value to true.
+				if(gaps.get(count) == false)
+				{
+					gridGame.add(stackGrid[count],row,col);
+				}
+				count--;
 			}
 		}
 	}
-	public void shiftBlocks(GenerateNumbers gn,int initialRows,int roundNum,BuildGUI bg, ArrayList blockValues)
+	public void shiftBlocks(GenerateNumbers gn,int initialRows,int roundNum,BuildGUI bg,BlockGaps gap, ArrayList blockValues)
 	{
 		int currentRows = initialRows + roundNum;
 		gn.setCurrentRows(currentRows);
 		System.out.println("currentRows = "+currentRows);
 		
-		placeBlocks(gn,bg,blockValues);
+		placeBlocks(gn,bg,gap,blockValues);
 	}
 	public Rectangle[] getGameRect()
 	{

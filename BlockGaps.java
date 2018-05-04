@@ -20,7 +20,7 @@ public class BlockGaps
 				blockGaps.add(false);
 			}
 			
-			System.out.println(String.valueOf(blockGaps.get(i)));
+			//System.out.println(String.valueOf(blockGaps.get(i)));
 		}
 	}
 	public ArrayList getBlockGaps()
