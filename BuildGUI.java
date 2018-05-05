@@ -15,7 +15,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.control.Button;
 import java.util.ArrayList;
 
-
 public class BuildGUI
 {
 	Pane root;
@@ -166,6 +165,7 @@ public class BuildGUI
 			gameRect[i].setStrokeType(StrokeType.INSIDE);
 			gameRect[i].setStroke(Paint.valueOf("000000"));
 			gameText[i] = new Text();
+			gameText[i].setFill(Paint.valueOf("FFFFFF"));
 			if(i < 8*currentRows)
 			{
 				stackGrid[i].getChildren().addAll(gameRect[i],gameText[i]);

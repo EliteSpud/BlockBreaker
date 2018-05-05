@@ -15,9 +15,25 @@ public class SetValues
 			Rectangle gameRect[] = bg.getGameRect();
 			if(gameText[i].getText() != "")
 			{
-				if(Integer.parseInt(gameText[i].getText()) >= 30)
+				if(Integer.parseInt(gameText[i].getText()) < 10) //0 to 9
 				{
-					gameRect[i].setFill(Paint.valueOf("FFFF00"));
+					gameRect[i].setFill(Paint.valueOf("3333FF"));
+				}
+				else if(Integer.parseInt(gameText[i].getText()) < 20 && Integer.parseInt(gameText[i].getText()) > 9) //10 to 19
+				{
+					gameRect[i].setFill(Paint.valueOf("0000FF"));
+				}
+				else if(Integer.parseInt(gameText[i].getText()) < 30 && Integer.parseInt(gameText[i].getText()) > 19) //20 to 29
+				{
+					gameRect[i].setFill(Paint.valueOf("0000CC"));
+				}
+				else if(Integer.parseInt(gameText[i].getText()) < 40 && Integer.parseInt(gameText[i].getText()) > 29) //30 to 39
+				{
+					gameRect[i].setFill(Paint.valueOf("000099"));
+				}
+				else if(Integer.parseInt(gameText[i].getText()) < 51 && Integer.parseInt(gameText[i].getText()) > 39) //40 to 50
+				{
+					gameRect[i].setFill(Paint.valueOf("000066"));
 				}
 			}
 		}

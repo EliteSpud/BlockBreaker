@@ -1,6 +1,9 @@
 .root{
-	-fx-background-color: #09145d;
+	-fx-background-color: #000000;
 }
 .btnNextRound{
 	-fx-background-color: #FFFF00;
+}
+.bottomPane{
+	-fx-background-color: #070f46;
 }

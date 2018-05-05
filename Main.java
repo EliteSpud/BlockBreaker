@@ -29,8 +29,8 @@ public class Main extends Application
 		bg.build(mainStage,gn,bg,blockValues);
 		
 		buildGame(bg,gn,blockValues);
-		//generate colours based on numbers
-		//spaces in-between blocks
+		//generate colours based on numbers 
+		//spaces in-between blocks done
 		//make them move down each round (have a button to test it)
 		//make balls + counter
 		//add direction choice
