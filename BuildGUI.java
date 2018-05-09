@@ -6,6 +6,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.paint.Paint;
 import java.awt.Color;
@@ -20,6 +22,7 @@ public class BuildGUI
 	Pane root;
 	Scene scene;
 	Pane rightPane;
+	Pane leftPane;
 	Rectangle menuRect;
 	Text menuText;
 	Rectangle scoreRect;
@@ -27,6 +30,8 @@ public class BuildGUI
 	Rectangle scoreMeterRect;
 	Rectangle fireRect;
 	Text fireText;
+	ArrayList<Circle> balls;
+	Line aimLine = new Line();
 	StackPane stackMenu;
 	StackPane stackScore;
 	StackPane stackStars;
@@ -36,18 +41,29 @@ public class BuildGUI
 	StackPane stackGrid[];
 	Rectangle gameRect[];
 	Text gameText[];
+	Pane bottomPane;
 	//testing elements
 	Button btnNextRound;
 	
 	int maxBlocks = 112; //maximum number of blocks on screen
+	int ballCenterX = 196;
+	int ballCenterY = 680;
 	
-	public void build(Stage s, GenerateNumbers gn,BuildGUI bg,ArrayList blockValues)
+	public void build(Stage s, GenerateNumbers gn,BuildGUI bg,ArrayList blockValues,Fire fire)
 	{
 		s.setTitle("Block Breaker");
 		
 		root = new Pane(); //root of the scene
 		scene = new Scene(root,504,896); //9:16 aspect ratio, divisible by 8
 		rightPane = new Pane();
+		
+		leftPane = new Pane();
+		leftPane.setOnMousePressed(new EventHandler<MouseEvent>(){
+			public void handle(MouseEvent event)
+			{
+				fire.aim(event.getX(),event.getY(),bg);
+			}
+		});
 		
 		menuRect = new Rectangle(112,63,Paint.valueOf("0000FF"));
 		menuRect.setStrokeType(StrokeType.INSIDE);
@@ -82,6 +98,7 @@ public class BuildGUI
 			}
 		});
 		
+		
 		stackMenu = new StackPane();
 		stackMenu.getChildren().addAll(menuRect,menuText);
 		stackMenu.setLayoutX(392);
@@ -102,8 +119,6 @@ public class BuildGUI
 		stackFire.setLayoutX(392);
 		stackFire.setLayoutY(686);
 		
-		rightPane.getChildren().addAll(stackMenu,stackScore,stackStars,stackFire);
-		
 		//////////game area starts here//////////
 		
 		gridGame = new GridPane();
@@ -115,6 +130,9 @@ public class BuildGUI
 		int totalRows = gn.getTotalRows();
 		gap.gaps(totalRows*8); //generates boolean array of true/false to determine if there is a gap (true) or not (false).
 		placeBlocks(gn,bg,gap,blockValues);
+		
+		balls = new ArrayList<Circle>();
+		makeBalls();
 		
 		gridGame.setLayoutX(0);
 		gridGame.setLayoutY(0);
@@ -138,8 +156,9 @@ public class BuildGUI
 			}
 		});
 		
-		
-		root.getChildren().addAll(rightPane,gridGame,btnNextRound);
+		leftPane.getChildren().addAll(gridGame,bottomPane,btnNextRound);
+		rightPane.getChildren().addAll(stackMenu,stackScore,stackStars,stackFire);
+		root.getChildren().addAll(rightPane,leftPane);
 		scene.getStylesheets().add(Main.class.getResource("gameStyle.css").toExternalForm());
 		
 		s.setScene(scene); 
@@ -196,6 +215,20 @@ public class BuildGUI
 		
 		placeBlocks(gn,bg,gap,blockValues);
 	}
+	public void makeBalls()
+	{
+		int startBalls = 50;
+		bottomPane = new Pane();
+		for(int i = 0;i < startBalls; i++)
+		{
+			balls.add(new Circle());
+			balls.get(i).setRadius(5);
+			balls.get(i).setCenterX(196);
+			balls.get(i).setCenterY(680);
+			balls.get(i).setFill(Paint.valueOf("DDDDDD"));
+		}
+		bottomPane.getChildren().addAll(balls);
+	}
 	public Rectangle[] getGameRect()
 	{
 		return gameRect;
@@ -211,5 +244,21 @@ public class BuildGUI
 	public GridPane getgridGame()
 	{
 		return gridGame;
+	}
+	public Line getLine()
+	{
+		return aimLine;
+	}
+	public int getBallCenterX()
+	{
+		return ballCenterX;
+	}
+	public int getBallCenterY()
+	{
+		return ballCenterY;
+	}
+	public Pane getLeftPane()
+	{
+		return leftPane;
 	}
 }

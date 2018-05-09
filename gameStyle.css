@@ -7,3 +7,6 @@
 .bottomPane{
 	-fx-background-color: #070f46;
 }
+.aimLine{
+	-fx-stroke: #DDDDDD;
+}
