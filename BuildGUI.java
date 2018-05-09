@@ -48,8 +48,9 @@ public class BuildGUI
 	int maxBlocks = 112; //maximum number of blocks on screen
 	int ballCenterX = 196;
 	int ballCenterY = 680;
+	boolean aimed = false;
 	
-	public void build(Stage s, GenerateNumbers gn,BuildGUI bg,ArrayList blockValues,Fire fire)
+	public void build(Stage s, GenerateNumbers gn,BuildGUI bg,ArrayList blockValues,Aim aim,Fire fire)
 	{
 		s.setTitle("Block Breaker");
 		
@@ -61,7 +62,7 @@ public class BuildGUI
 		leftPane.setOnMousePressed(new EventHandler<MouseEvent>(){
 			public void handle(MouseEvent event)
 			{
-				fire.aim(event.getX(),event.getY(),bg);
+				aim.drawLine(event.getX(),event.getY(),bg);
 			}
 		});
 		
@@ -86,7 +87,7 @@ public class BuildGUI
 			public void handle(MouseEvent event)
 			{
 				System.out.println("FIRE CLICKED");
-				//fire
+				fire.fire(bg);
 			}
 		});
 		fireText = new Text("FIRE");
@@ -94,7 +95,7 @@ public class BuildGUI
 			public void handle(MouseEvent event)
 			{
 				System.out.println("FIRE CLICKED");
-				//fire
+				fire.fire(bg);
 			}
 		});
 		
@@ -156,6 +157,7 @@ public class BuildGUI
 			}
 		});
 		
+		leftPane.setPrefWidth(392);
 		leftPane.getChildren().addAll(gridGame,bottomPane,btnNextRound);
 		rightPane.getChildren().addAll(stackMenu,stackScore,stackStars,stackFire);
 		root.getChildren().addAll(rightPane,leftPane);
@@ -260,5 +262,21 @@ public class BuildGUI
 	public Pane getLeftPane()
 	{
 		return leftPane;
+	}
+	public boolean getAimed()
+	{
+		return aimed;
+	}
+	public void setAimed(boolean aimedState)
+	{
+		aimed = aimedState;
+	}
+	public ArrayList<Circle> getBalls() //hehehe
+	{
+		return balls;
+	}
+	public Scene getScene()
+	{
+		return scene;
 	}
 }

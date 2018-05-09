@@ -1,29 +1,46 @@
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Circle;
 import javafx.scene.paint.Paint;
 import javafx.scene.layout.Pane;
+import java.util.ArrayList;
 
 public class Fire
 {
 	Line line;
-	Pane leftPane;
-	public void aim(double x,double y,BuildGUI bg)
+	double fireX;
+	double fireY;
+	ArrayList<Circle> balls;
+	double xSpeed = 5.0;
+	double ySpeed = -5.0;
+	public void fire(BuildGUI bg)
 	{
-		System.out.println("aim :"+x+","+y);
+		balls = bg.getBalls();
 		line = bg.getLine();
-		line.setStartX((double)bg.getBallCenterX());
-		line.setStartY((double)bg.getBallCenterY());
-		line.setEndX(x);
-		line.setEndY(y);
-		line.setStroke(Paint.valueOf("DDDDDD"));
-		
-		leftPane = bg.getLeftPane();
-		leftPane.getChildren().remove(line);	
-		leftPane.getChildren().add(line);	
-		//bg.getLeftPane().getChildren().remove(line);
-		//bg.getLeftPane().getChildren().add(line);
+		fireX = line.getEndX();
+		fireY = line.getEndY();
+		for(int i = 1; i < balls.size(); i++)
+		{
+			for(int k = 0; k < i; k++)
+			{
+				System.out.println("fire k loop");
+				balls.get(i).setCenterX(balls.get(i).getCenterX() + xSpeed);
+				balls.get(i).setCenterY(balls.get(i).getCenterY() + ySpeed);
+				//balls.get(i).setTranslateX(xSpeed);
+				//balls.get(i).setTranslateY(ySpeed);
+				
+				bg.getLeftPane().getChildren().remove(balls.get(i));
+				bg.getLeftPane().getChildren().add(balls.get(i));
+				//bg.getScene().show();
+			}
+			System.out.println("fire i loop");
+		}
 	}
-	public void fire()
+	public void setXSpeed(double speed)
 	{
-		
+		xSpeed = speed;
+	}
+	public void setYSpeed(double speed)
+	{
+		ySpeed = speed;
 	}
 }

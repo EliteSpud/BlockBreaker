@@ -25,9 +25,10 @@ public class Main extends Application
 	{
 		BuildGUI bg = new BuildGUI();
 		GenerateNumbers gn = new GenerateNumbers();
+		Aim aim = new Aim();
 		Fire fire = new Fire();
 		ArrayList<Integer> blockValues = new ArrayList<Integer>(gn.generate(1,51,20)); //generates ArrayList of random integers to be used for the block values.
-		bg.build(mainStage,gn,bg,blockValues,fire);
+		bg.build(mainStage,gn,bg,blockValues,aim,fire);
 		
 		buildGame(bg,gn,blockValues);
 		//generate colours based on numbers 
