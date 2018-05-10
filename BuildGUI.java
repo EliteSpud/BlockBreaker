@@ -17,6 +17,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.control.Button;
 import java.util.ArrayList;
 
+import javafx.concurrent.Task;
+
 public class BuildGUI
 {
 	Pane root;
@@ -83,20 +85,35 @@ public class BuildGUI
 		fireRect = new Rectangle(112,210,Paint.valueOf("FF0000"));
 		fireRect.setStrokeType(StrokeType.INSIDE);
 		fireRect.setStroke(Paint.valueOf("000000"));
-		fireRect.setOnMousePressed(new EventHandler<MouseEvent>(){
-			public void handle(MouseEvent event)
-			{
-				System.out.println("FIRE CLICKED");
-				fire.fire(bg);
-			}
-		});
+		
 		fireText = new Text("FIRE");
-		fireText.setOnMousePressed(new EventHandler<MouseEvent>(){
-			public void handle(MouseEvent event)
+		fireText.setOnMousePressed(event -> {
+			Task<Void> task = new Task<Void>() 	 //creates a new Task
 			{
-				System.out.println("FIRE CLICKED");
-				fire.fire(bg);
-			}
+				@Override
+				public Void call() throws Exception 
+				{
+					System.out.println("FIRE CLICKED");
+					fire.fire(bg);
+					
+					return null;
+				}
+			};
+			new Thread(task).start(); //creates a new Thread to run the task
+		});
+		fireRect.setOnMousePressed(event -> {
+			Task<Void> task = new Task<Void>() 	 //creates a new Task
+			{
+				@Override
+				public Void call() throws Exception 
+				{
+					System.out.println("FIRE CLICKED");
+					fire.fire(bg);
+					
+					return null;
+				}
+			};
+			new Thread(task).start(); //creates a new Thread to run the task
 		});
 		
 		
@@ -271,7 +288,7 @@ public class BuildGUI
 	{
 		aimed = aimedState;
 	}
-	public ArrayList<Circle> getBalls() //hehehe
+	public ArrayList<Circle> getBalls()
 	{
 		return balls;
 	}

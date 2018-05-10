@@ -10,15 +10,17 @@ public class Fire
 	double fireX;
 	double fireY;
 	ArrayList<Circle> balls;
-	double xSpeed = 5.0;
-	double ySpeed = -5.0;
+	double xSpeed = 5.0; //controls how fast the ball moves horizontally
+	double ySpeed = -3.0; //controls how fast the ball moves vertically
+	//Bounce bounce = new Bounce();
+	
 	public void fire(BuildGUI bg)
 	{
 		balls = bg.getBalls();
 		line = bg.getLine();
 		fireX = line.getEndX();
 		fireY = line.getEndY();
-		for(int i = 1; i < balls.size(); i++)
+		/*for(int i = 1; i < balls.size(); i++)
 		{
 			for(int k = 0; k < i; k++)
 			{
@@ -33,7 +35,67 @@ public class Fire
 				//bg.getScene().show();
 			}
 			System.out.println("fire i loop");
+		}*/
+
+		//for(int i = 0; i < 50; i++)
+		while(true)
+		{
+			balls.get(0).setCenterX(balls.get(0).getCenterX() + xSpeed);
+			balls.get(0).setCenterY(balls.get(0).getCenterY() + ySpeed);
+			
+			
+			if((balls.get(0).getCenterX() + 5) > bg.getLeftPane().getWidth())
+			{
+				bounce("right");
+				try{Thread.sleep(25);}
+				catch(InterruptedException ie){ie.printStackTrace();}
+				System.out.println("x speed is : "+xSpeed);
+			}
+			if((balls.get(0).getCenterX() - 5) <= 0)
+			{
+				bounce("left");
+				try{Thread.sleep(25);}
+				catch(InterruptedException ie){ie.printStackTrace();}
+				System.out.println("x speed is : "+xSpeed);
+			}
+			if((balls.get(0).getCenterY() - 5) <= 0)
+			{
+				bounce("top");
+				try{Thread.sleep(25);}
+				catch(InterruptedException ie){ie.printStackTrace();}
+				System.out.println("y speed is : "+ySpeed);
+			}
+			if((balls.get(0).getCenterY() + 5) > bg.getLeftPane().getHeight())
+			{
+				bottom(bg); //remove the ball from play
+				try{Thread.sleep(25);}
+				catch(InterruptedException ie){ie.printStackTrace();}
+			}
+			
+			try
+			{
+				Thread.sleep(5); //controls how fast the loop goes around
+			}
+			catch(InterruptedException ie)
+			{
+				ie.printStackTrace();
+			}
 		}
+	}
+	public void bounce(String side)
+	{
+		if(side.equals("right") || side.equals("left"))
+		{
+			xSpeed = -xSpeed;
+		}
+		if(side.equals("top"))
+		{
+			ySpeed = -ySpeed;
+		}
+	}
+	public void bottom(BuildGUI bg)
+	{
+		bg.getLeftPane().getChildren().remove(balls.get(0));
 	}
 	public void setXSpeed(double speed)
 	{
@@ -42,5 +104,13 @@ public class Fire
 	public void setYSpeed(double speed)
 	{
 		ySpeed = speed;
+	}
+	public double getXSpeed()
+	{
+		return xSpeed;
+	}
+	public double getYSpeed()
+	{
+		return ySpeed;
 	}
 }
