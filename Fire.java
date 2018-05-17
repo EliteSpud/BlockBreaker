@@ -10,9 +10,9 @@ public class Fire
 	double fireX;
 	double fireY;
 	ArrayList<Circle> balls;
-	double xSpeed = 5.0; //controls how fast the ball moves horizontally
-	double ySpeed = -3.0; //controls how fast the ball moves vertically
-	//Bounce bounce = new Bounce();
+	double xSpeed[]; //controls how fast the ball moves horizontally, 5.0 by default
+	double ySpeed[]; //controls how fast the ball moves vertically, -3 by default
+
 	
 	public void fire(BuildGUI bg)
 	{
@@ -20,6 +20,7 @@ public class Fire
 		line = bg.getLine();
 		fireX = line.getEndX();
 		fireY = line.getEndY();
+		int count = 1;
 		/*for(int i = 1; i < balls.size(); i++)
 		{
 			for(int k = 0; k < i; k++)
@@ -40,76 +41,89 @@ public class Fire
 		//for(int i = 0; i < 50; i++)
 		while(true)
 		{
-			balls.get(0).setCenterX(balls.get(0).getCenterX() + xSpeed);
-			balls.get(0).setCenterY(balls.get(0).getCenterY() + ySpeed);
-			
-			
-			if((balls.get(0).getCenterX() + 5) > bg.getLeftPane().getWidth())
+			for(int i = 0; i < count; i++)
 			{
-				bounce("right");
-				try{Thread.sleep(25);}
-				catch(InterruptedException ie){ie.printStackTrace();}
-				System.out.println("x speed is : "+xSpeed);
+				//bg.getRoot().requestLayout();
+				System.out.println("top of loop");				
+				System.out.println(i);
+				try //in a try and catch cause it wasn't working
+				{
+					balls.get(i).setCenterX(balls.get(i).getCenterX() + xSpeed[i]);
+					balls.get(i).setCenterY(balls.get(i).getCenterY() + ySpeed[i]);
+				}
+				catch(Exception e)
+				{
+					e.printStackTrace();
+				}
+				
+				if((balls.get(i).getCenterX() + 5) > bg.getLeftPane().getWidth())
+				{
+					bounce("right",i);
+					try{Thread.sleep(25);}
+					catch(InterruptedException ie){ie.printStackTrace();}
+					System.out.println("x speed is : "+xSpeed);
+				}
+				if((balls.get(i).getCenterX() - 5) <= i)
+				{
+					bounce("left",i);
+					try{Thread.sleep(25);}
+					catch(InterruptedException ie){ie.printStackTrace();}
+					System.out.println("x speed is : "+xSpeed);
+				}
+				if((balls.get(i).getCenterY() - 5) <= i)
+				{
+					bounce("top",i);
+					try{Thread.sleep(25);}
+					catch(InterruptedException ie){ie.printStackTrace();}
+					System.out.println("y speed is : "+ySpeed);
+				}
+				if((balls.get(i).getCenterY() + 5) > bg.getLeftPane().getHeight())
+				{
+					bottom(bg); //remove the ball from play
+					try{Thread.sleep(25);}
+					catch(InterruptedException ie){ie.printStackTrace();}
+				}
+				try
+				{
+					Thread.sleep(10); //controls how fast the loop goes around
+				}
+				catch(InterruptedException ie)
+				{
+					ie.printStackTrace();
+				}
+				System.out.println("bottom of loop");
 			}
-			if((balls.get(0).getCenterX() - 5) <= 0)
-			{
-				bounce("left");
-				try{Thread.sleep(25);}
-				catch(InterruptedException ie){ie.printStackTrace();}
-				System.out.println("x speed is : "+xSpeed);
-			}
-			if((balls.get(0).getCenterY() - 5) <= 0)
-			{
-				bounce("top");
-				try{Thread.sleep(25);}
-				catch(InterruptedException ie){ie.printStackTrace();}
-				System.out.println("y speed is : "+ySpeed);
-			}
-			if((balls.get(0).getCenterY() + 5) > bg.getLeftPane().getHeight())
-			{
-				bottom(bg); //remove the ball from play
-				try{Thread.sleep(25);}
-				catch(InterruptedException ie){ie.printStackTrace();}
-			}
-			
-			try
-			{
-				Thread.sleep(5); //controls how fast the loop goes around
-			}
-			catch(InterruptedException ie)
-			{
-				ie.printStackTrace();
-			}
+			count++;
 		}
 	}
-	public void bounce(String side)
+	public void bounce(String side,int pos)
 	{
 		if(side.equals("right") || side.equals("left"))
 		{
-			xSpeed = -xSpeed;
+			xSpeed[pos] = -xSpeed[pos];
 		}
 		if(side.equals("top"))
 		{
-			ySpeed = -ySpeed;
+			ySpeed[pos] = -ySpeed[pos];
 		}
 	}
 	public void bottom(BuildGUI bg)
 	{
-		bg.getLeftPane().getChildren().remove(balls.get(0));
+		//bg.getLeftPane().getChildren().remove(balls.get(0));
 	}
-	public void setXSpeed(double speed)
+	public void setXSpeed(double speed,int pos)
 	{
-		xSpeed = speed;
+		xSpeed[pos] = speed;
 	}
-	public void setYSpeed(double speed)
+	public void setYSpeed(double speed,int pos)
 	{
-		ySpeed = speed;
+		ySpeed[pos] = speed;
 	}
-	public double getXSpeed()
+	public double[] getXSpeed()
 	{
 		return xSpeed;
 	}
-	public double getYSpeed()
+	public double[] getYSpeed()
 	{
 		return ySpeed;
 	}

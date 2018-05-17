@@ -68,6 +68,10 @@ public class BuildGUI
 			}
 		});
 		
+		bottomPane = new Pane();
+		balls = new ArrayList<Circle>();
+		makeBalls();
+		
 		menuRect = new Rectangle(112,63,Paint.valueOf("0000FF"));
 		menuRect.setStrokeType(StrokeType.INSIDE);
 		menuRect.setStroke(Paint.valueOf("000000"));
@@ -149,8 +153,6 @@ public class BuildGUI
 		gap.gaps(totalRows*8); //generates boolean array of true/false to determine if there is a gap (true) or not (false).
 		placeBlocks(gn,bg,gap,blockValues);
 		
-		balls = new ArrayList<Circle>();
-		makeBalls();
 		
 		gridGame.setLayoutX(0);
 		gridGame.setLayoutY(0);
@@ -237,7 +239,6 @@ public class BuildGUI
 	public void makeBalls()
 	{
 		int startBalls = 50;
-		bottomPane = new Pane();
 		for(int i = 0;i < startBalls; i++)
 		{
 			balls.add(new Circle());
@@ -295,5 +296,9 @@ public class BuildGUI
 	public Scene getScene()
 	{
 		return scene;
+	}
+	public Pane getRoot()
+	{
+		return root;
 	}
 }
