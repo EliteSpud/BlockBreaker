@@ -17,6 +17,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.control.Button;
 import java.util.ArrayList;
 
+import javafx.animation.Timeline;
+import javafx.animation.AnimationTimer;
+
 import javafx.concurrent.Task;
 
 public class BuildGUI
@@ -52,13 +55,20 @@ public class BuildGUI
 	int ballCenterY = 680;
 	boolean aimed = false;
 	
+	
+	double xSpeed[]; //controls how fast the balls move horizontally
+	double ySpeed[]; //controls how fast the balls move vertically
+	
 	public void build(Stage s, GenerateNumbers gn,BuildGUI bg,ArrayList blockValues,Aim aim,Fire fire)
 	{
 		s.setTitle("Block Breaker");
-		
+
 		root = new Pane(); //root of the scene
 		scene = new Scene(root,504,896); //9:16 aspect ratio, divisible by 8
 		rightPane = new Pane();
+		BlockGaps gap = new BlockGaps();
+		int initialRows = gn.getInitialRows();
+		Round round = new Round();
 		
 		leftPane = new Pane();
 		leftPane.setOnMousePressed(new EventHandler<MouseEvent>(){
@@ -91,15 +101,15 @@ public class BuildGUI
 		fireRect.setStroke(Paint.valueOf("000000"));
 		
 		fireText = new Text("FIRE");
-		fireText.setOnMousePressed(event -> {
+		/*fireText.setOnMousePressed(event -> {
 			Task<Void> task = new Task<Void>() 	 //creates a new Task
 			{
 				@Override
 				public Void call() throws Exception 
 				{
 					System.out.println("FIRE CLICKED");
-					fire.fire(bg);
-					
+					//fire.fire(bg);
+					fire(gn,initialRows,bg,gap,blockValues,round);
 					return null;
 				}
 			};
@@ -112,13 +122,31 @@ public class BuildGUI
 				public Void call() throws Exception 
 				{
 					System.out.println("FIRE CLICKED");
-					fire.fire(bg);
+					//fire.fire(bg);
+					fire(gn,initialRows,bg,gap,blockValues,round);
 					
 					return null;
 				}
 			};
 			new Thread(task).start(); //creates a new Thread to run the task
+		});*/
+		fireText.setOnMousePressed(new EventHandler<MouseEvent>(){
+			public void handle(MouseEvent event)
+			{
+				System.out.println("FIRE CLICKED");
+				fire.fire(bg,gn);
+				//fire(gn,initialRows,bg,gap,blockValues,round);
+			}
 		});
+		fireRect.setOnMousePressed(new EventHandler<MouseEvent>(){
+			public void handle(MouseEvent event)
+			{
+				System.out.println("FIRE CLICKED");
+				fire.fire(bg,gn);
+				//fire(gn,initialRows,bg,gap,blockValues,round);
+			}
+		});
+		
 		
 		
 		stackMenu = new StackPane();
@@ -148,7 +176,6 @@ public class BuildGUI
 		gameRect = new Rectangle[maxBlocks];
 		gameText = new Text[maxBlocks];
 		
-		BlockGaps gap = new BlockGaps();
 		int totalRows = gn.getTotalRows();
 		gap.gaps(totalRows*8); //generates boolean array of true/false to determine if there is a gap (true) or not (false).
 		placeBlocks(gn,bg,gap,blockValues);
@@ -159,9 +186,6 @@ public class BuildGUI
 		
 		//game area ends here//
 		
-		Round round = new Round();
-		
-		int initialRows = gn.getInitialRows();
 		btnNextRound = new Button("Next Round");
 		btnNextRound.setLayoutX(50);
 		btnNextRound.setLayoutY(720);
@@ -169,21 +193,116 @@ public class BuildGUI
 		btnNextRound.setOnMousePressed(new EventHandler<MouseEvent>(){
 			public void handle(MouseEvent event)
 			{
-				int roundNum = round.next();
-				System.out.println("Round : "+roundNum);
-				removeBlocks(gn);
-				shiftBlocks(gn,initialRows,roundNum,bg,gap,blockValues);
+				nextRound(gn,initialRows,bg,gap,blockValues,round);
 			}
 		});
 		
 		leftPane.setPrefWidth(392);
-		leftPane.getChildren().addAll(gridGame,bottomPane,btnNextRound);
+		leftPane.getChildren().addAll(bottomPane,btnNextRound);
 		rightPane.getChildren().addAll(stackMenu,stackScore,stackStars,stackFire);
-		root.getChildren().addAll(rightPane,leftPane);
+		root.getChildren().addAll(gridGame,rightPane,leftPane);
 		scene.getStylesheets().add(Main.class.getResource("gameStyle.css").toExternalForm());
 		
 		s.setScene(scene); 
 		s.show();
+	}
+	/*public void fire(GenerateNumbers gn,int initialRows,BuildGUI bg,BlockGaps gap,ArrayList blockValues,Round round)
+	{
+		xSpeed = new double[balls.size()];
+		ySpeed = new double[balls.size()];
+		double defXSpeed = 5.0; //default x speed is +5 (right)
+		double defYSpeed = -3.0; //default y speed is -3 (up)
+		double paneHeight = leftPane.getHeight();
+		double paneWidth = leftPane.getWidth();
+		int count = 1;
+		int ballsInPlay = balls.size();
+		
+		for(int i = 0; i < balls.size(); i++) //sets the speed arrays to both have the default speed in all positions
+		{
+			xSpeed[i] = defXSpeed;
+			ySpeed[i] = defYSpeed;
+		}
+		while(ballsInPlay > 0)
+		{
+			for(int i = 0; i < count; i++)
+			{
+				balls.get(i).setCenterX(balls.get(i).getCenterX() + xSpeed[i]); //these two lines move the balls in the x and y axes...
+				balls.get(i).setCenterY(balls.get(i).getCenterY() + ySpeed[i]);	//...according to their respective speed settings
+				
+				if((balls.get(i).getCenterX() + 5) > paneWidth) //if ball hits the right side of the game area
+				{
+					bounce("right",i); //bounce ball i off the right side
+					System.out.println("x speed is : "+xSpeed[i]);
+				}
+				if((balls.get(i).getCenterX() - 5) <= i)
+				{
+					bounce("left",i); //bounce ball i off the left side
+					System.out.println("x speed is : "+xSpeed[i]);
+				}
+				if((balls.get(i).getCenterY() - 5) <= i)
+				{
+					bounce("top",i); //bounce ball i off the top
+					System.out.println("y speed is : "+ySpeed[i]);
+				}
+				if(balls.get(i).getCenterY() + 5 > paneHeight)
+				{
+					bottom(i); //remove the ball from play
+					ballsInPlay--;
+				}
+				try
+				{
+					Thread.sleep(2); //controls how fast the loop goes around, and therefore slows the balls down so they can be seen
+				}
+				catch(InterruptedException ie)
+				{
+					ie.printStackTrace();
+				}
+			}
+			if(count < balls.size())
+			{
+				count++;
+			}
+		}
+			Task<Void> task = new Task<Void>() 	 //creates a new Task
+			{
+				@Override
+				public Void call() throws Exception 
+				{
+					nextRound(gn,initialRows,bg,gap,blockValues,round);
+					return null;
+				}
+			};
+			new Thread(task).start(); //creates a new Thread to run the task
+	}
+	public void bounce(String side,int pos)
+	{
+		if(side.equals("right") || side.equals("left"))
+		{
+			xSpeed[pos] = -xSpeed[pos];
+		}
+		if(side.equals("top"))
+		{
+			ySpeed[pos] = -ySpeed[pos];
+		}
+	}
+	public void bottom(int ballNum)
+	{
+		System.out.println("Bottom : "+ballNum);
+		//set speed of this ball to 0
+		xSpeed[ballNum] = 0;
+		ySpeed[ballNum] = 0;
+		//set centre to original centre
+		balls.get(ballNum).setCenterX(ballCenterX);
+		balls.get(ballNum).setCenterY(ballCenterY);
+	}*/
+	public void nextRound(GenerateNumbers gn,int initialRows,BuildGUI bg,BlockGaps gap,ArrayList blockValues,Round round)
+	{
+		int roundNum = round.next();
+		System.out.println("Round : "+roundNum);
+		removeBlocks(gn);
+		shiftBlocks(gn,initialRows,roundNum,bg,gap,blockValues);
+		
+		//root.requestLayout();
 	}
 	public void removeBlocks(GenerateNumbers gn)
 	{
@@ -238,7 +357,7 @@ public class BuildGUI
 	}
 	public void makeBalls()
 	{
-		int startBalls = 50;
+		int startBalls = 5;
 		for(int i = 0;i < startBalls; i++)
 		{
 			balls.add(new Circle());
