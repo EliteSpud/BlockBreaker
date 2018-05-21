@@ -16,6 +16,7 @@ import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.control.Button;
 import java.util.ArrayList;
+import javafx.geometry.Bounds;
 
 import javafx.animation.Timeline;
 import javafx.animation.AnimationTimer;
@@ -99,54 +100,21 @@ public class BuildGUI
 		fireRect = new Rectangle(112,210,Paint.valueOf("FF0000"));
 		fireRect.setStrokeType(StrokeType.INSIDE);
 		fireRect.setStroke(Paint.valueOf("000000"));
-		
-		fireText = new Text("FIRE");
-		/*fireText.setOnMousePressed(event -> {
-			Task<Void> task = new Task<Void>() 	 //creates a new Task
-			{
-				@Override
-				public Void call() throws Exception 
-				{
-					System.out.println("FIRE CLICKED");
-					//fire.fire(bg);
-					fire(gn,initialRows,bg,gap,blockValues,round);
-					return null;
-				}
-			};
-			new Thread(task).start(); //creates a new Thread to run the task
-		});
-		fireRect.setOnMousePressed(event -> {
-			Task<Void> task = new Task<Void>() 	 //creates a new Task
-			{
-				@Override
-				public Void call() throws Exception 
-				{
-					System.out.println("FIRE CLICKED");
-					//fire.fire(bg);
-					fire(gn,initialRows,bg,gap,blockValues,round);
-					
-					return null;
-				}
-			};
-			new Thread(task).start(); //creates a new Thread to run the task
-		});*/
-		fireText.setOnMousePressed(new EventHandler<MouseEvent>(){
-			public void handle(MouseEvent event)
-			{
-				System.out.println("FIRE CLICKED");
-				fire.fire(bg,gn);
-				//fire(gn,initialRows,bg,gap,blockValues,round);
-			}
-		});
 		fireRect.setOnMousePressed(new EventHandler<MouseEvent>(){
 			public void handle(MouseEvent event)
 			{
 				System.out.println("FIRE CLICKED");
 				fire.fire(bg,gn);
-				//fire(gn,initialRows,bg,gap,blockValues,round);
+			}
+		});	
+		fireText = new Text("FIRE");
+		fireText.setOnMousePressed(new EventHandler<MouseEvent>(){
+			public void handle(MouseEvent event)
+			{
+				System.out.println("FIRE CLICKED");
+				fire.fire(bg,gn);
 			}
 		});
-		
 		
 		
 		stackMenu = new StackPane();
@@ -206,75 +174,7 @@ public class BuildGUI
 		s.setScene(scene); 
 		s.show();
 	}
-	/*public void fire(GenerateNumbers gn,int initialRows,BuildGUI bg,BlockGaps gap,ArrayList blockValues,Round round)
-	{
-		xSpeed = new double[balls.size()];
-		ySpeed = new double[balls.size()];
-		double defXSpeed = 5.0; //default x speed is +5 (right)
-		double defYSpeed = -3.0; //default y speed is -3 (up)
-		double paneHeight = leftPane.getHeight();
-		double paneWidth = leftPane.getWidth();
-		int count = 1;
-		int ballsInPlay = balls.size();
-		
-		for(int i = 0; i < balls.size(); i++) //sets the speed arrays to both have the default speed in all positions
-		{
-			xSpeed[i] = defXSpeed;
-			ySpeed[i] = defYSpeed;
-		}
-		while(ballsInPlay > 0)
-		{
-			for(int i = 0; i < count; i++)
-			{
-				balls.get(i).setCenterX(balls.get(i).getCenterX() + xSpeed[i]); //these two lines move the balls in the x and y axes...
-				balls.get(i).setCenterY(balls.get(i).getCenterY() + ySpeed[i]);	//...according to their respective speed settings
-				
-				if((balls.get(i).getCenterX() + 5) > paneWidth) //if ball hits the right side of the game area
-				{
-					bounce("right",i); //bounce ball i off the right side
-					System.out.println("x speed is : "+xSpeed[i]);
-				}
-				if((balls.get(i).getCenterX() - 5) <= i)
-				{
-					bounce("left",i); //bounce ball i off the left side
-					System.out.println("x speed is : "+xSpeed[i]);
-				}
-				if((balls.get(i).getCenterY() - 5) <= i)
-				{
-					bounce("top",i); //bounce ball i off the top
-					System.out.println("y speed is : "+ySpeed[i]);
-				}
-				if(balls.get(i).getCenterY() + 5 > paneHeight)
-				{
-					bottom(i); //remove the ball from play
-					ballsInPlay--;
-				}
-				try
-				{
-					Thread.sleep(2); //controls how fast the loop goes around, and therefore slows the balls down so they can be seen
-				}
-				catch(InterruptedException ie)
-				{
-					ie.printStackTrace();
-				}
-			}
-			if(count < balls.size())
-			{
-				count++;
-			}
-		}
-			Task<Void> task = new Task<Void>() 	 //creates a new Task
-			{
-				@Override
-				public Void call() throws Exception 
-				{
-					nextRound(gn,initialRows,bg,gap,blockValues,round);
-					return null;
-				}
-			};
-			new Thread(task).start(); //creates a new Thread to run the task
-	}
-	public void bounce(String side,int pos)
+	/*public void bounce(String side,int pos)
 	{
 		if(side.equals("right") || side.equals("left"))
 		{
@@ -380,9 +280,13 @@ public class BuildGUI
 	{
 		return stackGrid;
 	}
-	public GridPane getgridGame()
+	public GridPane getGridGame()
 	{
 		return gridGame;
+	}
+	public Bounds getGridGameBounds()
+	{
+		return gridGame.getBoundsInParent();
 	}
 	public Line getLine()
 	{
