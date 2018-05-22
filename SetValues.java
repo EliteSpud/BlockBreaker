@@ -13,7 +13,8 @@ public class SetValues
 		{
 			gameText[i].setText(String.valueOf(blockValues.get(i)));
 			Rectangle gameRect[] = bg.getGameRect();
-			if(gameText[i].getText() != "")
+			
+			if(gameText[i].getText() != "") //setting blocks to be different shades of blue depending on the size of their value
 			{
 				if(Integer.parseInt(gameText[i].getText()) < 10) //0 to 9
 				{

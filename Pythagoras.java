@@ -28,8 +28,8 @@ public class Pythagoras
 		//System.out.println("b = "+b);
 		//System.out.println("///////////////////////////////");
 		
-		xSpeed = a/15;
-		ySpeed = b/15;
+		xSpeed = a/150;
+		ySpeed = b/150;
 		
 		//System.out.println("xSpeed = "+xSpeed);
 		//System.out.println("ySpeed = "+ySpeed);

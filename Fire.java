@@ -1,8 +1,13 @@
+import javafx.scene.Node;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Circle;
 import javafx.scene.paint.Paint;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import java.util.ArrayList;
+import javafx.collections.ObservableList;
+import javafx.scene.text.*;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -29,16 +34,16 @@ public class Fire
 			balls = bg.getBalls();
 			
 			Bounds gridBounds = bg.getGridGameBounds();
-			System.out.println("gridBounds = "+gridBounds);
+			//System.out.println("gridBounds = "+gridBounds); //debug
 			Bounds paneBounds = bg.getLeftPane().getBoundsInParent();
 			double maxX = paneBounds.getMaxX();
 			double maxY = paneBounds.getMaxY();
 			
 			line = bg.getLine();
 			fireX = line.getEndX();
-			//System.out.println("fireX : "+fireX);
+			//System.out.println("fireX : "+fireX); //debug
 			fireY = line.getEndY();
-			//System.out.println("fireY : "+fireY);
+			//System.out.println("fireY : "+fireY); //debug
 			xSpeed = new double[balls.size()];
 			ySpeed = new double[balls.size()];
 			int initialRows = gn.getInitialRows();
@@ -50,9 +55,9 @@ public class Fire
 			
 			double defXSpeed = p.getXSpeed(); //default x speed is +5 (right)
 			double defYSpeed = p.getYSpeed(); //default y speed is -3 (up)
-			//System.out.println("defXSpeed = "+defXSpeed);
-			//System.out.println("defYSpeed = "+defYSpeed);
-			//System.out.println("///////////////////////////////");
+			//System.out.println("defXSpeed = "+defXSpeed); //debug
+			//System.out.println("defYSpeed = "+defYSpeed); //debug
+			//System.out.println("///////////////////////////////"); //debug
 			double paneHeight = bg.getLeftPane().getHeight();
 			double paneWidth = bg.getLeftPane().getWidth();
 			int count = 1;
@@ -61,8 +66,8 @@ public class Fire
 			{
 				xSpeed[i] = defXSpeed;
 				ySpeed[i] = defYSpeed;
-				//System.out.println("xSpeed["+i+"] = "+xSpeed[i]);
-				//System.out.println("ySpeed["+i+"] = "+ySpeed[i]);
+				//System.out.println("xSpeed["+i+"] = "+xSpeed[i]); //debug
+				//System.out.println("ySpeed["+i+"] = "+ySpeed[i]); //debug
 			}
 			
 			//System.out.println("initial ballX = "+balls.get(0).getLayoutX()); //debug
@@ -75,11 +80,17 @@ public class Fire
 			}
 			Timeline t = new Timeline(new KeyFrame(Duration.millis(10), new EventHandler<ActionEvent>() 
 			{
-
 				@Override
 				public void handle(final ActionEvent t) 
 				{
 					Bounds ballHitBox;
+					Bounds stackBounds;
+					ObservableList<Node> stacks = bg.getGridGame().getChildren(); //list of nodes of type stackPane (children of gridGame)
+					ArrayList<StackPane> sPanes = new ArrayList<StackPane>();
+					Text txt;
+					boolean inGridBounds;
+					boolean inStackBounds;
+					
 					for(int i = 0; i < balls.size(); i++)
 					{
 						if(ballsInPlay.get(i) == true)
@@ -118,11 +129,40 @@ public class Fire
 							}
 							//System.out.println("/////////////////////"); //debug
 							ballHitBox = balls.get(i).getBoundsInParent();
-							boolean inGridBounds = gridBounds.intersects(ballHitBox); //checks if the ball is somewhere in the gridPane containing the blocks
-							//System.out.println("inGridBounds = "+inGridBounds);
+							inGridBounds = gridBounds.intersects(ballHitBox); //checks if the ball is somewhere in the gridPane containing the blocks
+							//System.out.println("inGridBounds = "+inGridBounds); //debug
 							if(inGridBounds == true)
 							{
-								
+								int s = 0;
+								for(Node stack : stacks)
+								{
+									if(stack instanceof StackPane)
+									{
+										sPanes.add((StackPane)stack);
+									}
+									stackBounds = stack.getBoundsInParent();
+									inStackBounds = stackBounds.intersects(ballHitBox);
+									if(inStackBounds)
+									{
+										int col = GridPane.getColumnIndex(stack);
+										int row = GridPane.getRowIndex(stack);
+										
+										ObservableList<Node> stackChildren = sPanes.get(s).getChildren();
+										for(Node node : stackChildren)
+										{
+											if(node instanceof Text)
+											{
+												txt = (Text)node;
+												if(GridPane.getColumnIndex(node.getParent()) == col && GridPane.getRowIndex(node.getParent()) == row)
+												{
+													try{txt.setText(String.valueOf(Integer.parseInt(txt.getText()) - 1));}
+													catch(NumberFormatException p){p.printStackTrace();}
+												}
+											}
+										}
+									}
+								s++;
+								}
 							}
 						}
 					}

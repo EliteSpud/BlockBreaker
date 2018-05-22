@@ -18,7 +18,7 @@ public class BlockGaps
 			else
 			{
 				blockGaps.add(false);
-			}
+			} //so there should be, on average, a 60% chance of each available block existing
 		}
 	}
 	public ArrayList getBlockGaps()
