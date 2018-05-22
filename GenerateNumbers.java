@@ -14,7 +14,6 @@ public class GenerateNumbers
 		
 		if(level == 1)
 		{
-			
 			for(int i = 0; i < (totalRows*8); i++)
 			{
 				numList.add(i,r.nextInt(high-low)+low); //generates a number between high (exclusive) and low (inclusive), adds it to ArrayList

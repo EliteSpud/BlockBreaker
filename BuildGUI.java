@@ -103,7 +103,7 @@ public class BuildGUI
 		fireRect.setOnMousePressed(new EventHandler<MouseEvent>(){
 			public void handle(MouseEvent event)
 			{
-				System.out.println("FIRE CLICKED");
+				System.out.println("//////////////////////////FIRE CLICKED//////////////////////////");
 				fire.fire(bg,gn);
 			}
 		});	
@@ -111,7 +111,7 @@ public class BuildGUI
 		fireText.setOnMousePressed(new EventHandler<MouseEvent>(){
 			public void handle(MouseEvent event)
 			{
-				System.out.println("FIRE CLICKED");
+				System.out.println("//////////////////////////FIRE CLICKED//////////////////////////");
 				fire.fire(bg,gn);
 			}
 		});
@@ -146,7 +146,7 @@ public class BuildGUI
 		
 		int totalRows = gn.getTotalRows();
 		gap.gaps(totalRows*8); //generates boolean array of true/false to determine if there is a gap (true) or not (false).
-		placeBlocks(gn,bg,gap,blockValues);
+		placeBlocks(gn,bg,gap,blockValues,true);
 		
 		
 		gridGame.setLayoutX(0);
@@ -213,37 +213,87 @@ public class BuildGUI
 			gridGame.getChildren().remove(stackGrid[i]);
 		}
 	}
-	public void placeBlocks(GenerateNumbers gn,BuildGUI bg,BlockGaps gap,ArrayList blockValues)
+	public void placeBlocks(GenerateNumbers gn,BuildGUI bg,BlockGaps gap,ArrayList blockValues,boolean moreRowsStored)
 	{
 		SetValues sv = new SetValues();
 		int currentRows = gn.getCurrentRows();
-		for(int i = (currentRows*8)-1; i > -1; i--)
+		if(moreRowsStored == true)
 		{
-			stackGrid[i] = new StackPane();
-			gameRect[i] = new Rectangle(49,49,Paint.valueOf("FFFFFF"));
-			gameRect[i].setStrokeType(StrokeType.INSIDE);
-			gameRect[i].setStroke(Paint.valueOf("000000"));
-			gameText[i] = new Text();
-			gameText[i].setFill(Paint.valueOf("FFFFFF"));
-			if(i < 8*currentRows)
+			for(int i = (currentRows*8)-1; i > -1; i--)
 			{
-				stackGrid[i].getChildren().addAll(gameRect[i],gameText[i]);
+				stackGrid[i] = new StackPane();
+				gameRect[i] = new Rectangle(49,49,Paint.valueOf("FFFFFF"));
+				gameRect[i].setStrokeType(StrokeType.INSIDE);
+				gameRect[i].setStroke(Paint.valueOf("000000"));
+				gameText[i] = new Text();
+				gameText[i].setFill(Paint.valueOf("FFFFFF"));
+				if(i < 8*currentRows)
+				{
+					stackGrid[i].getChildren().addAll(gameRect[i],gameText[i]);
+					stackGrid[i].setId("intact");
+				}
+			}
+			sv.set(blockValues,gameText,gn,bg);
+			
+			ArrayList<Boolean> gaps = gap.getBlockGaps();
+			
+			int count = (currentRows*8)-1;
+			for(int col = 0; col < currentRows; col++)
+			{
+				for(int row = 0; row < 8; row++)
+				{
+					if(gaps.get(count) == false)
+					{
+						gridGame.add(stackGrid[count],row,col);
+					}
+					count--;
+				}
 			}
 		}
-		sv.set(blockValues,gameText,gn,bg);
-		
-		ArrayList<Boolean> gaps = gap.getBlockGaps();
-		
-		int count = (currentRows*8)-1;
-		for(int col = 0; col < currentRows; col++)
+		else if(moreRowsStored == false)
 		{
-			for(int row = 0; row < 8; row++)
+			for(int i = (currentRows*8)-1; i > -1; i--)
 			{
-				if(gaps.get(count) == false)
+				stackGrid[i] = new StackPane();
+				gameRect[i] = new Rectangle(49,49,Paint.valueOf("000000"));
+				gameRect[i].setStrokeType(StrokeType.INSIDE);
+				gameRect[i].setStroke(Paint.valueOf("000000"));
+				gameText[i] = new Text();
+				gameText[i].setFill(Paint.valueOf("FFFFFF"));
+				if(i < 8*(currentRows))
 				{
-					gridGame.add(stackGrid[count],row,col);
+					stackGrid[i].getChildren().addAll(gameRect[i],gameText[i]);
+					stackGrid[i].setId("intact");
 				}
-				count--;
+				sv.set(blockValues,gameText,gn,bg);
+			
+				ArrayList<Boolean> gaps = gap.getBlockGaps();
+				
+				int count = (currentRows*8)-1;
+				int totalRows = gn.getTotalRows();
+				for(int col = 0; col < currentRows; col++)
+				{
+					for(int row = 0; row < 8; row++)
+					{
+						if(((currentRows - totalRows)*8) - 1 > count)
+						{
+							gridGame.add(stackGrid[count],row,col);
+						}
+						else if(currentRows > totalRows)
+						{
+							int offset = (currentRows - totalRows)*8;
+							if(gaps.get(count-offset) == false)
+							{
+								gridGame.add(stackGrid[count],row,col);
+							}
+						}
+						else if(gaps.get(count) == false)
+						{
+							gridGame.add(stackGrid[count],row,col);
+						}
+						count--;
+					}
+				}
 			}
 		}
 	}
@@ -252,8 +302,14 @@ public class BuildGUI
 		int currentRows = initialRows + roundNum;
 		gn.setCurrentRows(currentRows);
 		System.out.println("currentRows = "+currentRows);
-		
-		placeBlocks(gn,bg,gap,blockValues);
+		if(currentRows <= gn.getTotalRows())
+		{	
+			placeBlocks(gn,bg,gap,blockValues,true);
+		}
+		else
+		{
+			placeBlocks(gn,bg,gap,blockValues,false);
+		}
 	}
 	public void makeBalls()
 	{

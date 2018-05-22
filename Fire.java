@@ -1,6 +1,7 @@
 import javafx.scene.Node;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.Paint;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.GridPane;
@@ -48,9 +49,9 @@ public class Fire
 			ySpeed = new double[balls.size()];
 			int initialRows = gn.getInitialRows();
 			int totalRows = gn.getTotalRows();
-			int topCutoff = (totalRows-initialRows)*49;
+			int topCutoff = (totalRows-initialRows)*49; //the height of the leftPane that is actually above the visible area
 			
-			Pythagoras p = new Pythagoras();
+			Pythagoras p = new Pythagoras(); //doesn't actually do Pythagoras. It did originally. Needs renaming.
 			p.calculateSpeeds(fireX,fireY,maxX,maxY,topCutoff);
 			
 			double defXSpeed = p.getXSpeed(); //default x speed is +5 (right)
@@ -85,83 +86,141 @@ public class Fire
 				{
 					Bounds ballHitBox;
 					Bounds stackBounds;
-					ObservableList<Node> stacks = bg.getGridGame().getChildren(); //list of nodes of type stackPane (children of gridGame)
-					ArrayList<StackPane> sPanes = new ArrayList<StackPane>();
-					Text txt;
+					ObservableList<Node> stacks = bg.getGridGame().getChildren(); //list of nodes of type stackPane (children of gridGame), however they're stored as Node
+					ArrayList<StackPane> sPanes = new ArrayList<StackPane>(); //used to store the nodes in 'stacks', but actually as the StackPane datatype and not just the generic Node
 					boolean inGridBounds;
 					boolean inStackBounds;
+					ArrayList<Circle> ballsToMove = new ArrayList<Circle>();
 					
-					for(int i = 0; i < balls.size(); i++)
+					for(int i = 0; i < balls.size(); i++) //loops through each ball that has not yet reached the bottom
 					{
-						if(ballsInPlay.get(i) == true)
+						if(ballsToMove.contains(balls.get(i)) == false)
 						{
-							balls.get(i).setLayoutX(balls.get(i).getLayoutX() + xSpeed[i]);
-							balls.get(i).setLayoutY(balls.get(i).getLayoutY() - ySpeed[i]);
-						
-							boolean atRightBorder = balls.get(i).getLayoutX() >= (maxX/2 - balls.get(i).getRadius());
-							boolean atLeftBorder = balls.get(i).getLayoutX() <= (-(maxX/2) + balls.get(i).getRadius());
+							ballsToMove.add(balls.get(i));
+						}
+						for(int q = 0; q < ballsToMove.size(); q++)
+						{
+							if(ballsInPlay.get(q) == true) //if ball has not hit the bottom
+							{
+								ballsToMove.get(q).setLayoutX(balls.get(q).getLayoutX() + xSpeed[q]); //moving the balls
+								ballsToMove.get(q).setLayoutY(balls.get(q).getLayoutY() - ySpeed[q]); //-y as y increases downwards
 							
-							boolean atBottomBorder = (balls.get(i).getLayoutY() > (balls.get(i).getRadius()));
-							
-							boolean atTopBorder = balls.get(i).getLayoutY() <= (-(maxY-topCutoff) - balls.get(i).getRadius());
-							//System.out.println("minX = "+maxX+" ballX = "+balls.get(i).getLayoutX()); //debug
-							//System.out.println("maxX = "+maxX+" ballX = "+balls.get(i).getLayoutX()); //debug
-							//System.out.println("minY = "+maxY+" ballY = "+ -(balls.get(i).getLayoutY())); //debug
-							//System.out.println("maxy = "+maxY+" ballY = "+ -(balls.get(i).getLayoutY())); //debug
-							if(atRightBorder || atLeftBorder)
-							{
-								xSpeed[i] *= -1;
-								//System.out.println("atRightBorder = "+atRightBorder+" position = "+balls.get(i).getLayoutX()+","+balls.get(i).getLayoutY()); //debug
-								//System.out.println("atLeftBorder = "+atLeftBorder+" position = "+balls.get(i).getLayoutX()+","+balls.get(i).getLayoutY()); //debug
-							}
-							if(atTopBorder) 
-							{
-								ySpeed[i] *= -1;
-								//System.out.println("atTopBorder = "+atTopBorder+" position = "+balls.get(i).getLayoutX()+","+balls.get(i).getLayoutY()); //debug
-							}
-							if(atBottomBorder)
-							{
-								ballsInPlay.set(i,false);
-								balls.get(i).setLayoutX(0.0);
-								balls.get(i).setLayoutY(0.0);
-								//System.out.println("atBottomBorderBorder = "+atBottomBorder); //debug
-								canFire = true;
-							}
-							//System.out.println("/////////////////////"); //debug
-							ballHitBox = balls.get(i).getBoundsInParent();
-							inGridBounds = gridBounds.intersects(ballHitBox); //checks if the ball is somewhere in the gridPane containing the blocks
-							//System.out.println("inGridBounds = "+inGridBounds); //debug
-							if(inGridBounds == true)
-							{
-								int s = 0;
-								for(Node stack : stacks)
+								boolean atRightBorder = balls.get(q).getLayoutX() >= (maxX/2 - balls.get(q).getRadius());
+								boolean atLeftBorder = balls.get(q).getLayoutX() <= (-(maxX/2) + balls.get(q).getRadius());
+								boolean atBottomBorder = (balls.get(q).getLayoutY() > (balls.get(q).getRadius()));
+								boolean atTopBorder = balls.get(q).getLayoutY() <= (-(maxY-topCutoff) - balls.get(q).getRadius());
+								//System.out.println("minX = "+maxX+" ballX = "+balls.get(i).getLayoutX()); //debug
+								//System.out.println("maxX = "+maxX+" ballX = "+balls.get(i).getLayoutX()); //debug
+								//System.out.println("minY = "+maxY+" ballY = "+ -(balls.get(i).getLayoutY())); //debug
+								//System.out.println("maxy = "+maxY+" ballY = "+ -(balls.get(i).getLayoutY())); //debug
+								if(atRightBorder || atLeftBorder)
 								{
-									if(stack instanceof StackPane)
+									xSpeed[q] *= -1; //reverses the xSpeed, so the ball travels in the opposite direction in the x axis
+									
+									//System.out.println("atRightBorder = "+atRightBorder+" position = "+balls.get(i).getLayoutX()+","+balls.get(i).getLayoutY()); //debug
+									//System.out.println("atLeftBorder = "+atLeftBorder+" position = "+balls.get(i).getLayoutX()+","+balls.get(i).getLayoutY()); //debug
+								}
+								if(atTopBorder) 
+								{
+									ySpeed[q] *= -1; //reverses the ySpeed, so the ball travels in the opposite direction in the y axis
+									
+									//System.out.println("atTopBorder = "+atTopBorder+" position = "+balls.get(i).getLayoutX()+","+balls.get(i).getLayoutY()); //debug
+								}
+								if(atBottomBorder)
+								{
+									ballsInPlay.set(q,false); //remove this ball from play
+									balls.get(q).setLayoutX(0.0); //return ball to original position
+									balls.get(q).setLayoutY(0.0);
+									//System.out.println("atBottomBorderBorder = "+atBottomBorder); //debug
+									
+									//////////////////////////////////////////////////////////////////////
+									canFire = true; //should only be called when all balls are out of play
+									//////////////////////////////////////////////////////////////////////
+								}
+								//System.out.println("/////////////////////"); //debug
+								ballHitBox = balls.get(q).getBoundsInParent();
+								inGridBounds = gridBounds.intersects(ballHitBox); //checks if the ball is somewhere in the gridPane containing the blocks
+								//System.out.println("inGridBounds = "+inGridBounds); //debug
+								if(inGridBounds == true)
+								{
+									int s = 0;
+									for(Node stack : stacks) //for every Node 'stack' in ObservableList 'stacks'
 									{
-										sPanes.add((StackPane)stack);
-									}
-									stackBounds = stack.getBoundsInParent();
-									inStackBounds = stackBounds.intersects(ballHitBox);
-									if(inStackBounds)
-									{
-										int col = GridPane.getColumnIndex(stack);
-										int row = GridPane.getRowIndex(stack);
-										
-										ObservableList<Node> stackChildren = sPanes.get(s).getChildren();
-										for(Node node : stackChildren)
+										if(stack instanceof StackPane)
 										{
-											if(node instanceof Text)
+											sPanes.add((StackPane)stack);
+										}
+										stackBounds = stack.getBoundsInParent();
+										inStackBounds = stackBounds.intersects(ballHitBox);
+										if(inStackBounds) //if ball is in the bounds of a StackPane (i.e. if a ball is touching or inside of a block)
+										{
+											int col = GridPane.getColumnIndex(stack);
+											int row = GridPane.getRowIndex(stack);
+											
+											ObservableList<Node> stackChildren = sPanes.get(s).getChildren(); //gets the children of the stackPane (Rectangle,Text)
+											for(Node node : stackChildren) //for every Node 'node' in ObservableList 'stackChildren'
 											{
-												txt = (Text)node;
-												if(GridPane.getColumnIndex(node.getParent()) == col && GridPane.getRowIndex(node.getParent()) == row)
+												Text txt = new Text();
+												if(node instanceof Text)
 												{
-													try{txt.setText(String.valueOf(Integer.parseInt(txt.getText()) - 1));}
-													catch(NumberFormatException p){p.printStackTrace();}
+													txt = (Text)node;
+													if(GridPane.getColumnIndex(node.getParent()) == col && GridPane.getRowIndex(node.getParent()) == row)
+													{
+														if(txt.getText().equals("")==false)
+														{
+															try{txt.setText(String.valueOf(Integer.parseInt(txt.getText()) - 1));}
+															catch(NumberFormatException p){p.printStackTrace();System.out.println("/////////////");}
+														}
+													}
+												}
+												try
+												{
+													if(txt.getText().equals("") == false)
+													{
+														if(Integer.parseInt(txt.getText()) <= 0)
+														{
+															node.setVisible(false); //this is used to set the text to be invisible. it does not work for the rectangle.
+															stackChildren.set(0,new Rectangle(49,49)); //sets the StackPane at index 0 (the rectangle) to be a new blank rectangle of the same size.
+																									   //this makes it so it appears that the rectangle has been broken or has disappeared
+															sPanes.get(s).setId("broken");
+														}
+													}
+												}
+												catch(Exception p){p.printStackTrace();}
+											}
+											
+											//layoutX and layoutY are taken from the top-left of the StackPane
+											if(((StackPane)stack).getId().equals("broken")==false)
+											{
+												double stackX = ((StackPane)stack).getLayoutX();
+												double stackY = ((StackPane)stack).getLayoutY();
+												System.out.println("stackX = "+stackX+" stackX +49 = "+(stackX+49)+" stackY = "+stackY+" stackY + 49 = "+(stackY+49)+ " ballX = "+(balls.get(q).getLayoutX() + (balls.get(q).getRadius() * 2) + maxX/2)+" ballY = "+(balls.get(q).getLayoutY() + (maxY-topCutoff)));
+												if(balls.get(q).getLayoutX() + (balls.get(q).getRadius() * 2) + maxX/2 >= stackX
+												&& (balls.get(q).getLayoutX() + maxX/2) < stackX && xSpeed[q] > 0)
+												{
+													System.out.println("hit left of block");
+													xSpeed[q] *= -1;
+												}
+												else if(balls.get(q).getLayoutX() + maxX/2 <= stackX+50
+												&& (balls.get(q).getLayoutX() + maxX/2 > stackX + 40) && xSpeed[q] < 0)
+												{
+													System.out.println("hit right of block");
+													xSpeed[q] *= -1;
+												}
+												else if((balls.get(q).getLayoutY() /*- (balls.get(q).getRadius() * 2)*/ + (maxY-topCutoff)) >= stackY && ySpeed[q] > 0)
+												{
+													System.out.println("HIT BOTTOM");
+													ySpeed[q] *= -1;
+												}
+												else if(balls.get(q).getLayoutY() + (maxY-topCutoff) <= stackY-49 && balls.get(q).getLayoutX() + (maxY - topCutoff) > stackY+39 && ySpeed[q] < 0)
+												{
+													System.out.println("HIT TOP");
+													ySpeed[q] *= -1;
 												}
 											}
 										}
+									s++;
 									}
-								s++;
 								}
 							}
 						}

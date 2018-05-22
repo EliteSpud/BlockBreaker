@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 public class BlockGaps
 {
-	ArrayList<Boolean> blockGaps = new ArrayList<Boolean>();
+	ArrayList<Boolean> blockGaps = new ArrayList<Boolean>(); //if true, there is no block at the corresponding location
 	public void gaps(int numBlocks)
 	{
 		Random r = new Random();
